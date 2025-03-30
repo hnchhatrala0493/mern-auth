@@ -37,7 +37,10 @@ export const Register = async (req, res) => {
     };
     await transporter.sendMail(mailOption);
 
-    return res.json({ success: true });
+    return res.json({
+      success: true,
+      message: "Congratulation! User Registered Successfully",
+    });
   } catch (error) {
     res.json({ message: error.message });
   }
@@ -70,7 +73,7 @@ export const Login = async (req, res) => {
     return res.status(201).json({
       success: true,
       token: token,
-      message: "Logging Successfully",
+      message: "User Logging Successfully",
     });
   } catch (error) {
     return res.json({ success: true, message: error.message });

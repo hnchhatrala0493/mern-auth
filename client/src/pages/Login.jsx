@@ -21,6 +21,7 @@ const Login = () => {
         if(data.success){
           setIsLoggedIn(true)
           getUserData()
+          toast.success(data.message)
           navigate('/login')
         }else{
           toast.error(data.message);
@@ -30,6 +31,7 @@ const Login = () => {
         if(data.success){
           setIsLoggedIn(true)
           getUserData()
+          toast.success(data.message)
           navigate('/')
         }else{
           toast.error(data.message);
