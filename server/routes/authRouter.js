@@ -12,6 +12,7 @@ import {
   sendForgotPasswordOTP,
   verifiedOTP,
   changePassword,
+  ProfileUpdate,
 } from "../controllers/LoginController.js";
 import userAuth from "../middleware/userAuth.js";
 
@@ -33,5 +34,7 @@ authRouter.post("/send-reset-otp", userAuth, sendResetOTP);
 authRouter.post("/send-forgot-password-otp", sendForgotPasswordOTP);
 authRouter.post("/verify-otp", verifiedOTP);
 authRouter.post("/change-password", changePassword);
+
+authRouter.put("/profile-update", userAuth, ProfileUpdate);
 
 export default authRouter;

@@ -389,3 +389,34 @@ export const changePassword = async (req, res) => {
     return res.json({ success: false, message: error.message });
   }
 };
+export const ProfileUpdate = async (req, res) => {
+  const { userId, email, name } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found." });
+    }
+
+    user.name = name;
+    user.email = email;
+
+    await user.save();
+
+    const mailOption = {
+      from: process.env.SENDER_EMAIL,
+      to: user.email,
+      subject: "Congratulation! Your Profile Update Successfully",
+      text: `Your Profile Updated`,
+    };
+
+    await transporter.sendMail(mailOption);
+
+    return res.json({
+      success: true,
+      message: "Profile Updated.",
+    });
+  } catch (error) {
+    return res.json({ success: false, message: error.message });
+  }
+};

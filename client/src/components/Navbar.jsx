@@ -34,6 +34,7 @@ const Navbar = () => {
       toast.error(error.message);
     }
   }
+  
   return (
     <div className='w-full flex justify-between items-center p-4 sm:p-6 sm:px-24 absolute top-0'>
         <img src={assets.logo} alt='' className='w-28 sm:w-32'/>
@@ -45,6 +46,7 @@ const Navbar = () => {
             {userData.isAccountVerifyOtp && 
               <li className='py-1 px-2 hover:bg-gray-200 cursor-pointer' onClick={sendVerificationOtp}>Verify Email</li>
             }
+            <li className='py-1 px-2 hover:bg-gray-200 cursor-pointer' onClick={navigate('/profile')}>Profile</li>
             <li onClick={logout} className='py-1 px-2 hover:bg-gray-200 cursor-pointer pr-10'>Logout</li>
           </ul>
           </div>
