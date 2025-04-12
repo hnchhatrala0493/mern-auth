@@ -9,10 +9,10 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const {backendUrl} = useContext(AppContent);
   axios.defaults.withCredentials = true;
-  const [email, setEmailId]= useState('');
+  const [email, setEmailId] = useState('');  
   const [newPassword, setNewPassword]= useState('');
   const [isEmailSent, setIsEmailSent]= useState('');
-  const [emailOTP, setEmailOTP]= useState(0);
+  const [emailOTP, setEmailOTP]= useState();
   const [IsOtpSubmit, setIsOtpSubmit]= useState(false);
   
   const inputRefs = React.useRef([]);
@@ -40,14 +40,28 @@ const ResetPassword = () => {
 
   const onSubmitEmail=async(e)=>{
     e.preventDefault();
-    
     try {
-      const {data} = await axios.post(backendUrl+'/api/auth/send-verify-otp',{email});
-      data.success ? toast.success(data.message) : toast.error(data.message); 
+      const {data} = await axios.post(backendUrl+'/api/auth/send-reset-otp',{email});
+      data.success ? toast.success(data.message) && setIsEmailSent(true) : toast.error(data.message); 
     } catch (error) {
       toast.error(error.message)
     }
   }
+  
+  const onSubmitVerifiedEmail=async(e)=>{
+    e.preventDefault();
+
+    try {
+      const OTPArray = inputRefs.current.map(e=>e.value);
+      const emailOTP = OTPArray.join('');
+      const {data} = await axios.post(backendUrl+'/api/auth/verify-otp',{email,emailOTP});
+      data.success ? toast.success(data.message) && setIsEmailSent(true) && IsOtpSubmit(true) : toast.error(data.message); 
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+
   return (
     <div className='flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400'>
       <img src={assets.logo} onClick={()=>navigate("/")} alt='' className='absolute left-5 sm:left-20 top-5 w-28 sm:w-32 cursor-pointer' />
@@ -63,7 +77,7 @@ const ResetPassword = () => {
       </form>
     }
      {!IsOtpSubmit && isEmailSent && 
-      <form onSubmit={onSubmitEmail} className='bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm'>
+      <form onSubmit={onSubmitVerifiedEmail} className='bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm'>
         <h1 className='text-white text-2xl font-semibold text-center mb-4'>Reset Password OTP</h1>
         <p className='text-center mb-6 text-indigo-300'>Enter the 6-digit code sent to your email id.</p>
         <div className='flex justify-between mb-8' onPaste={handlePaste}>
@@ -80,7 +94,7 @@ const ResetPassword = () => {
           <p className='text-center mb-6 text-indigo-300'>Enter the new password below.</p>
           <div className='mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]'>
             <img src={assets.lock_icon} alt="" className='w-3 h-3' />
-            <input value={newPassword} onChange={e=>setNewPassword(e.target.value)} required type='password' placeholder='New Password' className=' bg-transparent text-white  outline-none' />
+            <input value={newPassword} onChange={e=>setNewPassword(e.target.value)} required type='password' placeholder='New Password' className='bg-transparent text-white  outline-none' />
           </div>
           <button className='w-full py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full mt-3'>Submit</button>
       </form>

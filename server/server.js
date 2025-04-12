@@ -12,7 +12,8 @@ const PORT = process.env.PORT || 3000;
 
 await connectDB();
 
-const allowedOrigins = ["https://mern-auth-client-orpin.vercel.app"];
+const allowedOrigins = ["http://localhost:5173"];
+// const allowedOrigins = ["https://mern-auth-client-orpin.vercel.app"];
 
 app.use(express.json());
 app.use(cookieParser());

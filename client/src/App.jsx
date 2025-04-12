@@ -15,9 +15,9 @@ const App = () => {
       <ToastContainer />
       <Routes>
         <Route path='/' element={<Home/>} />
-        <Route path='/dashboard' element={<Dashboard/>} />
         <Route path='/login' element={<Login/>}/>
-        <Route path='/profile' element={<Profile/>}/>
+        <Route path='/dashboard' element={<Dashboard/>} />
+        {/* <Route path='/profile' element={<Profile/>}/> */}
         <Route path='/forgot-password' element={<ForgotPassword/>}/>
         <Route path='/email-verify' element={<EmailVerify/>}/>
         <Route path='/reset-password' element={<ResetPassword/>}/>

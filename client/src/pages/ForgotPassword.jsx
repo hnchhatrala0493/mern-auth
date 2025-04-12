@@ -11,12 +11,13 @@ const ForgotPassword = () => {
   const [email, setEmailId] = useState('');
   const [newPassword, setNewPassword]= useState('');
   const [confirmPassword, setConfirmPassword]= useState('');
-  const [isEmailSent, setIsEmailSent]= useState('');
-  const [emailOTP, setEmailOTP]= useState(0);
+  const [isEmailSent, setIsEmailSent]= useState('');  
   const [IsOtpSubmit, setIsOtpSubmit]= useState(false);
-  const inputRefs = React.useRef([]);
   const [timeLeft, setTimeLeft] = useState(60);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
+
+  const inputRefs = React.useRef([]);
+  
   useEffect(() => {
     if (timeLeft > 0) {
       const timer = setInterval(() => {
@@ -33,7 +34,7 @@ const ForgotPassword = () => {
     }
   }
   const handleDown=(e,index)=>{
-    if(e.key==='Backspace' && e.target.value === '' && index > 0){
+    if(e.key === 'Backspace' && e.target.value === '' && index > 0){
       inputRefs.current[index+1].focus();
     }
   }
@@ -52,18 +53,19 @@ const ForgotPassword = () => {
     e.preventDefault();
     try {
       const {data} = await axios.post(backendUrl+ '/api/auth/send-forgot-password-otp',{email});
-      data.success ? toast.success(data.message) : toast.error(data.message);
-      setIsEmailSent(true) 
+      data.success ? setIsEmailSent(true) && toast.success(data.message) : toast.error(data.message);       
     } catch (error) {
       toast.error(error.message)
     }
   }
+  
   const onSubmitVerifyOTP=async(e)=>{
     e.preventDefault();
     try {
-      const {data} = await axios.post(backendUrl+ '/api/auth/verify-otp',{emailOTP});
-      data.success ? toast.success(data.message) : toast.error(data.message);
-      setIsOtpSubmit(true) 
+      const OTPArray = inputRefs.current.map(e=>e.value);
+      const emailOTP = OTPArray.join('');       
+      const {data} = await axios.post(backendUrl+ '/api/auth/verify-otp',{email,emailOTP});
+      data.success ? setIsOtpSubmit(true) && toast.success(data.message) : toast.error(data.message);       
     } catch (error) {
       toast.error(error.message)
     }
@@ -71,9 +73,10 @@ const ForgotPassword = () => {
   const onSubmitChangePassword=async(e)=>{
     e.preventDefault();
     try {
-      const {data} = await axios.post(backendUrl+ '/api/auth/change-password',{newPassword});
+      const {data} = await axios.post(backendUrl+ '/api/auth/change-password',{email,newPassword});
       data.success ? toast.success(data.message) : toast.error(data.message);
-      setIsEmailSent(true) 
+      setIsEmailSent(true)
+      navigate('/login') 
     } catch (error) {
       toast.error(error.message)
     }
@@ -97,10 +100,14 @@ const ForgotPassword = () => {
         <h1 className='text-white text-2xl font-semibold text-center mb-4'>Forgot Password OTP</h1>
           <p className='text-center mb-6 text-indigo-300'>Enter the 6-digit code sent to your email id.</p>
           <div className='flex justify-between mb-8' onPaste={handlePaste}>
+            <input type='email' value={email} className='h-12 w-full rounded-lg px-3 bg-[#333A5C]  text-gray-300  outline-none' readOnly="true" />
+          </div>
+          <div className='flex justify-between mb-8' onPaste={handlePaste}>
             {Array(6).fill(0).map((_,index)=>(
-              <input ref={e=>inputRefs.current[index] = e } onInput={(e)=>handleInput(e,index)} onKeyDown={(e)=>handleDown(e,index)} onChange={e=>setEmailOTP(e.target.value)}  type='text' maxLength='1' key={index} required className='w-12 h-12 bg-[#333A5C] text-white text-center text-xl rounded-md'/>
+              <input ref={e=>inputRefs.current[index] = e } onInput={(e)=>handleInput(e,index)}  onKeyDown={(e)=>handleDown(e,index)} type='text' maxLength='1' key={index} required className='w-12 h-12 bg-[#333A5C] text-white text-center text-xl rounded-md'/>
             ))}
           </div>      
+          <button className="text-white float-end">Resend OTP</button>
         <button className='w-full py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full'>Submit</button>
         </form>
       }

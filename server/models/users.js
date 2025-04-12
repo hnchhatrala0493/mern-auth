@@ -15,15 +15,15 @@ const UserSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    verifyOtp: {
+    emailVerifyOTP: {
       type: String,
       default: "",
     },
-    expireOtp: {
+    emailExpireOTP: {
       type: Number,
       default: 0,
     },
-    isAccountVerifyOtp: {
+    isAccountVerify: {
       type: Boolean,
       default: false,
     },
